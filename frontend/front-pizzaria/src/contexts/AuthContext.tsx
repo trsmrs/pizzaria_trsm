@@ -8,6 +8,7 @@ type AuthContextData = {
   isAuthenticated: boolean;
   signIn: (credentials: SignInProps) => Promise<void>;
   signOut: () => void;
+  signUp: (credentials: SignUpProps) => Promise<void>;
 };
 
 type UserProps = {
@@ -17,6 +18,12 @@ type UserProps = {
 };
 
 type SignInProps = {
+  email: string;
+  password: string;
+};
+
+type SignUpProps = {
+  name: string;
   email: string;
   password: string;
 };
@@ -41,38 +48,55 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const isAuthenticated = !!user;
 
   async function signIn({ email, password }: SignInProps) {
-    try{
-      const response = await api.post('/session', {
+    try {
+      const response = await api.post("/session", {
         email,
-        password
-      })
-     
-      const {id, name, token} = response.data
+        password,
+      });
 
-      setCookie(undefined, '@nextauth.token', token, {
+      const { id, name, token } = response.data;
+
+      setCookie(undefined, "@nextauth.token", token, {
         maxAge: 60 * 60 * 24 * 30,
-        path: "/" // caminhos que terão acesso
-      })
+        path: "/", // caminhos que terão acesso
+      });
 
       setUser({
         id,
         name,
-        email
-      })
+        email,
+      });
 
       // passar token para proximas requisições
-      api.defaults.headers['Authrization'] = `Bearer ${token}`
+      api.defaults.headers["Authrization"] = `Bearer ${token}`;
 
       // Redirect user to Dashboard
-      Router.push('/dashboard')
+      Router.push("/dashboard");
+    } catch (error) {
+      console.log("signin error", error);
+    }
+  }
 
-    }catch(error){
-      console.log("signin error", error)
+  async function signUp({ name, email, password }: SignUpProps) {
+    try {
+      const response = await api.post('/users', {
+        name,
+        email,
+        password
+      })
+
+      console.log('Cadastrado com sucesso!')
+      Router.push('/')
+
+    } catch (error) {
+      console.log("Erro ao cadastrar: ", error);
     }
   }
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, signIn, signOut }}>
+    <AuthContext.Provider
+      value={{ user, isAuthenticated, signIn, signUp, signOut }}
+    >
       {children}
     </AuthContext.Provider>
   );
