@@ -1,33 +1,67 @@
-import Head from 'next/head'
-import styles from '@/styles/home.module.scss'
-import logoImg from '@/public/logo.png'
-import logoSVG from '@/public/logosvg.svg'
-import Image from 'next/image'
+import { FormEvent, useContext, useState } from "react";
+import Head from "next/head";
+import styles from "@/styles/home.module.scss";
+import logoSVG from "@/public/logosvg.png";
+import Image from "next/image";
 
-import {Input, TextArea} from '@/src/components/ui/input/index'
+import { Button } from "@/src/components/ui/Button";
+import { Input } from "@/src/components/ui/input/index";
 
+import { AuthContext } from "../contexts/AuthContext";
+
+import Link from "next/link";
 
 export default function Home() {
+  const {signIn} = useContext(AuthContext)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  async function handleLogin(event: FormEvent){
+      event.preventDefault();
+
+      let data = {
+          email,
+          password
+      }
+
+     await signIn(data)
+  }
+
   return (
     <>
       <Head>
-        <title>
-          Mamma Mia - Faça Login
-        </title>
+        <title>Mamma Mia - Faça Login</title>
       </Head>
       <div className={styles.containerCenter}>
-        <Image src={logoSVG} alt='logo pizzaria'/>
+        <Image className={styles.img} src={logoSVG} alt="logo pizzaria" />
 
         <div className={styles.login}>
-              <form action="">
-               <Input placeholder='Digite seu e-mail' type='text'/>
-               <Input placeholder='Digite sua senha' type='password'/>
+          <form action="" onSubmit={handleLogin}>
 
-               <TextArea />
-               
-              </form>
+            <Input placeholder="Digite seu e-mail" 
+            type="text" 
+            value={email}
+            onChange={(e)=> setEmail(e.target.value)}
+            />
+
+            <Input placeholder="Digite sua senha" 
+            type="password"
+            value={password}
+            onChange={(e)=> setPassword(e.target.value)}
+            />
+
+            <Button type="submit" loading={false} name="Acessar" />
+          </form>
+
+          <Link href="/signup" 
+          children="Não possui cadastro? Cadastre-se"
+          className={styles.link}  
+          />
+          
+    
         </div>
-      </div> 
+      </div>
     </>
-  )
+  );
 }
