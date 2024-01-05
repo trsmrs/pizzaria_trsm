@@ -10,7 +10,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <AuthProvider>
       <Component {...pageProps} />
-      <ToastContainer closeOnClick={true} autoClose={3000} position="top-center"/>
+      <ToastContainer closeOnClick={true} autoClose={2000} position="top-center"/>
     </AuthProvider>
   );
 }
