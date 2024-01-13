@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "pizzaria-app",
-    "slug": "pizzaria-app",
+    "name": "mobile-pizzaria",
+    "slug": "mobile-pizzaria",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
